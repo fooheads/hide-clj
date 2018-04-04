@@ -43,7 +43,9 @@
        [file-path row col]))))
 
 (defn get-doc [ns sym]
-  (binding [*ns* (find-ns ns) ]
+  (if ns
+    (binding [*ns* (find-ns ns) ]
+      (eval `(with-out-str (repl/doc ~sym))))
     (eval `(with-out-str (repl/doc ~sym)))))
 
 (defn doc
