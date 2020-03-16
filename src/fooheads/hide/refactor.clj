@@ -2,8 +2,8 @@
   (:require [clj-refactor.edit :as edit]
             [clj-refactor.transform :as r]
             [rewrite-clj.zip :as z]
-            [rewrite-clj.zip.findz :as findz]
-            ))
+            [rewrite-clj.zip.findz :as findz]))
+            
 
 (defn swap-position!
   [zloc cursor-ref offset]

@@ -44,7 +44,7 @@
 
 (defn get-doc [ns sym]
   (if ns
-    (binding [*ns* (find-ns ns) ]
+    (binding [*ns* (find-ns ns)]
       (eval `(with-out-str (repl/doc ~sym))))
     (eval `(with-out-str (repl/doc ~sym)))))
 
@@ -55,7 +55,7 @@
    (let [namespace (-> zloc hz/find-namespace hz/extract-namespace-sym)
          sym (-> zloc z/node :value)]
      ; (log/debug "metadata:" metadata)
-     (get-doc namespace sym)
-     )))
+     (get-doc namespace sym))))
+     
 
 

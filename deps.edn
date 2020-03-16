@@ -1,2 +1,4 @@
 {:deps
- {fooheads/clj-refactor {:local/root "../clj-refactor"}}}
+ {;fooheads/clj-refactor {:local/root "../clj-refactor"}
+  fooheads/clj-refactor {:git/url "https://github.com/fooheads/clj-refactor.git"
+                         :sha "a9190c435c81d7bc9c50f229ba13b1e6e1d59b40"}}}
