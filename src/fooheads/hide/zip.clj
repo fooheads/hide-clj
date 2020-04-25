@@ -1,7 +1,7 @@
 (ns fooheads.hide.zip
   (:require [rewrite-clj.zip :as z]
-            [rewrite-clj.zip.findz :as findz])  
-  )
+            [rewrite-clj.zip.findz :as findz]))  
+  
 
 ;; 
 ;; Predicates
