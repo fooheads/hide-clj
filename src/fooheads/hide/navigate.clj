@@ -1,6 +1,5 @@
 (ns fooheads.hide.navigate
   (:require [clojure.java.io :as io]
-            [clojure.tools.logging :as log]
             [fooheads.hide.zip :as hz]
             [rewrite-clj.zip :as z]
             [rewrite-clj.zip.findz :as findz]
