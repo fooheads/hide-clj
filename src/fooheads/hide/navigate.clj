@@ -77,11 +77,13 @@
        [edit-path row col]))))
 
 (defn get-doc [ns sym]
-  (let [code (if ns
-               (binding [*ns* (find-ns ns)]
-                 `(with-out-str (repl/doc ~sym)))
-               `(with-out-str (repl/doc ~sym)))]
-    (eval code)))
+  (when (and ns sym)
+    (let [code (if ns
+                 (binding [*ns* (find-ns ns)]
+                   `(with-out-str (repl/doc ~sym)))
+                 `(with-out-str (repl/doc ~sym)))]
+      (when code
+        (eval code)))))
 
 
 (defn doc
