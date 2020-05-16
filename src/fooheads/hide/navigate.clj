@@ -69,7 +69,7 @@
   ([zloc]
    (let [namespace (-> zloc hz/find-namespace hz/extract-namespace-sym)
          sym (-> zloc z/node :value)
-         metadata (meta (ns-resolve namespace sym))
+         metadata (if (and namespace sym) (meta (ns-resolve namespace sym)))
          edit-path (metadata-path->edit-path (:file metadata))
          row (:line metadata)
          col (:column metadata)]
