@@ -67,13 +67,29 @@
   ([code row col] (find-definition (hz/zloc code row col)))
 
   ([zloc]
-   (let [namespace (-> zloc hz/find-namespace hz/extract-namespace-sym)
+   (let [nspace (-> zloc hz/find-namespace hz/extract-namespace-sym)
          sym (-> zloc z/node :value)
-         metadata (if (and namespace sym) (meta (ns-resolve namespace sym)))
+
+         resolved-sym
+         (cond
+           ; Resolve in the namespace at the current position.
+           (and nspace sym)
+           (ns-resolve nspace sym)
+
+           ; If not, see if it's a qualified symbol. Can even resolve from
+           ; edn-files with this option.
+           (qualified-symbol? sym)
+           (ns-resolve (symbol (namespace sym)) (symbol (name sym)))
+
+           ; Couldn't resolve, give up.
+           :else nil)
+
+         metadata (meta resolved-sym)
          edit-path (metadata-path->edit-path (:file metadata))
          row (:line metadata)
          col (:column metadata)]
-     (if edit-path
+
+     (when edit-path
        [edit-path row col]))))
 
 (defn get-doc [ns sym]
