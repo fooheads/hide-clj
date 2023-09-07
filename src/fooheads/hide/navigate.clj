@@ -1,9 +1,11 @@
 (ns fooheads.hide.navigate
-  (:require [clojure.java.io :as io]
-            [fooheads.hide.zip :as hz]
-            [rewrite-clj.zip :as z]
-            [rewrite-clj.zip.findz :as findz]
-            [clojure.repl :as repl]))
+  (:require
+    [clojure.java.io :as io]
+    [clojure.repl :as repl]
+    [fooheads.hide.zip :as hz]
+    [rewrite-clj.zip :as z]
+    [rewrite-clj.zip.findz :as findz]))
+
 
 (defn get-namespace
   "Returns the namespace (as a symbol) for the given position.
@@ -14,17 +16,19 @@
           hz/find-namespace
           hz/extract-namespace-sym))
 
+
 (defn get-filename
   "Returns the full path for the file contaning the `sym`
   in `namespace`. Returns nil if the symbol can't be resolved
   or if the file can't be found."
   [namespace sym]
   (some->> sym
-       (ns-resolve namespace)
-       meta
-       :file
-       io/resource
-       .getFile))
+           (ns-resolve namespace)
+           meta
+           :file
+           io/resource
+           .getFile))
+
 
 (defn jar-path [metadata-path]
   (if-let [jar-path (some->> metadata-path io/resource .getFile)]
@@ -33,17 +37,20 @@
         (if (and jar-file-path clojure-file-path)
           (format "zipfile:%s::%s" jar-file-path clojure-file-path))))))
 
+
 (defn jar-path [metadata-path]
   (if-let [[_ jar-file-path clojure-file-path]
            (some->>
              metadata-path io/resource .getFile
-            (re-matches #"file:(.*\.jar)!/(.*)"))]
+             (re-matches #"file:(.*\.jar)!/(.*)"))]
     (if (and jar-file-path clojure-file-path)
       (format "zipfile:%s::%s" jar-file-path clojure-file-path))))
+
 
 (defn file-system-path [metadata-path]
   (if (.exists (io/as-file metadata-path))
     metadata-path))
+
 
 (defn uri-path [metadata-path]
   (when-let [file-path (some->> metadata-path io/resource .getFile)]
@@ -92,6 +99,7 @@
      (when edit-path
        [edit-path row col]))))
 
+
 (defn get-doc [ns sym]
   (when (and ns sym)
     (let [code (if ns
@@ -110,6 +118,7 @@
          sym (-> zloc z/node :value)
          result (get-doc nspace sym)]
      result)))
+
 
 (comment
   (let [paths ["fooheads/hide_nvim/joho.clj"
@@ -131,7 +140,5 @@
   (metadata-path->edit-path "clojure/core.clj")
   (metadata-path->edit-path "fooheads/hide_nvim/client2.clj")
   (metadata-path->edit-path "/Users/nicke/w/fooheads/hide-clj.nvim/src/fooheads/hide_nvim/client2.clj"))
-
-
 
 

@@ -1,5 +1,6 @@
 (ns fooheads.hide)
 
+
 (defn eval-code
   "Evaluates the code"
   [code]

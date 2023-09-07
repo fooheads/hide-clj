@@ -1,7 +1,8 @@
 (ns fooheads.hide.zip
-  (:require [rewrite-clj.zip :as z]
-            [rewrite-clj.zip.findz :as findz]))  
-  
+  (:require
+    [rewrite-clj.zip :as z]
+    [rewrite-clj.zip.findz :as findz]))
+
 
 ;; 
 ;; Predicates
@@ -11,11 +12,13 @@
   "Returns true if `zloc` is not a whitespace node."
   (not= (z/tag zloc) :whitespace))
 
+
 (defn ns? [zloc]
   "Returns `true` if zloc is positioned on a list node where
   the first value is the symbol 'ns."
   (and (= (z/tag zloc) :list)
        (= (-> zloc z/sexpr first) 'ns)))
+
 
 (defn sym? [zloc]
   "Returns `true` if zloc is positioned on a token node where
@@ -32,24 +35,25 @@
   on the namespace form."
   [zloc]
   (some-> zloc
-      (z/down)
-      (z/find-next sym?)
-      (z/node)
-      :value))
+          (z/down)
+          (z/find-next sym?)
+          (z/node)
+          :value))
 
 
 ;; 
 ;; Navigation functions
 ;;
 
-(defn up-or-left 
+(defn up-or-left
   "Goes up if it's not at the top level, otherwise goes left."
   [zloc]
   (if (-> zloc z/up second :pnodes)
     (z/up zloc)
     (z/left zloc)))
 
-(defn find-namespace 
+
+(defn find-namespace
   "Finds the namespace node from the `zloc`. 
   Currently only seems to find the top-level namespace.
   Returns nil if no namespace can be found."

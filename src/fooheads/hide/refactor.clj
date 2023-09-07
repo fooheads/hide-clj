@@ -1,18 +1,20 @@
 (ns fooheads.hide.refactor
-  (:require [clj-refactor.edit :as edit]
-            [clj-refactor.transform :as r]
-            [rewrite-clj.zip :as z]
-            [rewrite-clj.zip.findz :as findz]))
-            
+  (:require
+    [clj-refactor.edit :as edit]
+    [clj-refactor.transform :as r]
+    [rewrite-clj.zip :as z]
+    [rewrite-clj.zip.findz :as findz]))
+
 
 (defn swap-position!
   [zloc cursor-ref offset]
   (swap! cursor-ref edit/read-position zloc offset)
   zloc)
 
-(defn introduce-let 
+
+(defn introduce-let
   "Introduces let around the form under cursor, and binds the 
-  form  `binding-name`" 
+  form  `binding-name`"
   [code row col binding-name]
 
   (let [pos {:row row :col col :end-row row :end-col col}
@@ -40,9 +42,10 @@
 
         (z/root-string))))
 
-(defn move-to-let 
+
+(defn move-to-let
   "Moves the form under cursor the the first let up the thee,
-  binding it to `binding-name`" 
+  binding it to `binding-name`"
   [code row col binding-name]
 
   (let [pos {:row row :col col :end-row row :end-col col}
