@@ -8,21 +8,24 @@
 ;; Predicates
 ;; 
 
-(defn not-whitespace? [zloc]
+(defn not-whitespace?
   "Returns true if `zloc` is not a whitespace node."
+  [zloc]
   (not= (z/tag zloc) :whitespace))
 
 
-(defn ns? [zloc]
+(defn ns?
   "Returns `true` if zloc is positioned on a list node where
   the first value is the symbol 'ns."
+  [zloc]
   (and (= (z/tag zloc) :list)
        (= (-> zloc z/sexpr first) 'ns)))
 
 
-(defn sym? [zloc]
+(defn sym?
   "Returns `true` if zloc is positioned on a token node where
   the value is a symbol"
+  [zloc]
   (and (= (z/tag zloc) :token)
        (symbol? (-> (z/node zloc) :value))))
 
@@ -64,9 +67,10 @@
 ;; Entry point
 ;; 
 
-(defn zloc [code row col]
+(defn zloc
   "Creates a zipper from the code and positions zloc at
   a position in the tree that matches (`row` `col`)."
+  [code row col]
   (let [pos {:row row :col col :end-row row :end-col col}
         zipper (z/of-string code)]
     (findz/find-last-by-pos zipper pos not-whitespace?)))

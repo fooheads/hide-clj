@@ -3,8 +3,7 @@
     [clojure.java.io :as io]
     [clojure.repl :as repl]
     [fooheads.hide.zip :as hz]
-    [rewrite-clj.zip :as z]
-    [rewrite-clj.zip.findz :as findz]))
+    [rewrite-clj.zip :as z]))
 
 
 (defn get-namespace
@@ -31,24 +30,16 @@
 
 
 (defn jar-path [metadata-path]
-  (if-let [jar-path (some->> metadata-path io/resource .getFile)]
-    (if-let [match (re-matches #"file:(.*\.jar)!/(.*)" jar-path)]
-      (if-let [[_ jar-file-path clojure-file-path] match]
-        (if (and jar-file-path clojure-file-path)
-          (format "zipfile:%s::%s" jar-file-path clojure-file-path))))))
-
-
-(defn jar-path [metadata-path]
-  (if-let [[_ jar-file-path clojure-file-path]
-           (some->>
-             metadata-path io/resource .getFile
-             (re-matches #"file:(.*\.jar)!/(.*)"))]
-    (if (and jar-file-path clojure-file-path)
+  (when-let [[_ jar-file-path clojure-file-path]
+             (some->>
+               metadata-path io/resource .getFile
+               (re-matches #"file:(.*\.jar)!/(.*)"))]
+    (when (and jar-file-path clojure-file-path)
       (format "zipfile:%s::%s" jar-file-path clojure-file-path))))
 
 
 (defn file-system-path [metadata-path]
-  (if (.exists (io/as-file metadata-path))
+  (when (.exists (io/as-file metadata-path))
     metadata-path))
 
 
