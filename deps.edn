@@ -1,3 +1,2 @@
 {:deps
- {fooheads/clj-refactor {:git/url "https://github.com/fooheads/clj-refactor.git"
-                         :sha "3ce41f5126618f3b64e6066a9d06854d544f9b1a"}}}
+ {rewrite-clj/rewrite-clj {:mvn/version "1.1.47"}}}

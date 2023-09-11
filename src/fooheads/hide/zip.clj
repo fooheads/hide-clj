@@ -4,9 +4,9 @@
     [rewrite-clj.zip.findz :as findz]))
 
 
-;; 
+;;
 ;; Predicates
-;; 
+;;
 
 (defn not-whitespace?
   "Returns true if `zloc` is not a whitespace node."
@@ -29,7 +29,7 @@
   (and (= (z/tag zloc) :token)
        (symbol? (-> (z/node zloc) :value))))
 
-;; 
+;;
 ;; Utilities
 ;;
 
@@ -37,41 +37,76 @@
   "Extracts the namespace symbol from a zloc positioned
   on the namespace form."
   [zloc]
-  (some-> zloc
-          (z/down)
-          (z/find-next sym?)
-          (z/node)
-          :value))
+  (some-> zloc z/sexpr second))
+          ;(z/down)
+          ;(z/find-next sym?)
+          ;(z/node)
+          ;:value))
 
 
-;; 
+;;
 ;; Navigation functions
 ;;
 
 (defn up-or-left
   "Goes up if it's not at the top level, otherwise goes left."
   [zloc]
-  (if (-> zloc z/up second :pnodes)
+  (if (-> zloc z/up :node)
     (z/up zloc)
     (z/left zloc)))
 
 
+(defn left-or-up
+  "Goes left if it's not at the left most element level, otherwise goes up"
+  [zloc]
+  (if (-> zloc z/left :node)
+    (z/left zloc)
+    (z/up zloc)))
+
+
 (defn find-namespace
-  "Finds the namespace node from the `zloc`. 
+  "Finds the namespace node from the `zloc`.
   Currently only seems to find the top-level namespace.
   Returns nil if no namespace can be found."
   [zloc]
-  (z/find zloc up-or-left ns?))
+  (z/find zloc left-or-up ns?))
 
 ;;
 ;; Entry point
-;; 
+;;
 
 (defn zloc
   "Creates a zipper from the code and positions zloc at
   a position in the tree that matches (`row` `col`)."
   [code row col]
   (let [pos {:row row :col col :end-row row :end-col col}
-        zipper (z/of-string code)]
+        zipper (z/of-string code {:track-position? true})]
     (findz/find-last-by-pos zipper pos not-whitespace?)))
+
+
+(comment
+  (def loc
+    (z/of-string
+      ;(slurp "test_project/src/example_0.clj")
+      (slurp "test_project/src/example.clj")
+      ;(slurp "test_project/src/example_3.cljc")
+      ;"(ns example-0\n  \"Example namespace\")"
+      {:track-position? true}))
+
+  (-> loc
+      (z/find-last-by-pos {:row 5 :col 7 :end-row 5 :end-col 7} not-whitespace?)
+      (find-namespace)
+      (extract-namespace-sym))
+      ;second)
+      ;(z/find up-or-left ns?))
+      ;(z/root-string))
+
+
+  #_(-> loc
+        (z/find-last-by-pos {:row 13 :col 5 :end-row 13 :end-col 5} not-whitespace?)
+        (find-namespace)))
+      ;(z/sexpr)
+      ;(second))
+      ;(find-namespace)
+      ;(extract-namespace-sym))
 

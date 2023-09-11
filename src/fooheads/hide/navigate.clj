@@ -35,7 +35,7 @@
                metadata-path io/resource .getFile
                (re-matches #"file:(.*\.jar)!/(.*)"))]
     (when (and jar-file-path clojure-file-path)
-      (format "zipfile:%s::%s" jar-file-path clojure-file-path))))
+      (format "zipfile://%s::%s" jar-file-path clojure-file-path))))
 
 
 (defn file-system-path [metadata-path]
@@ -102,13 +102,13 @@
 
 
 (defn doc
-  ([code row col] (doc (hz/zloc code row col)))
+  ([code row col]
+   (doc (hz/zloc code row col)))
 
   ([zloc]
    (let [nspace (-> zloc hz/find-namespace hz/extract-namespace-sym)
-         sym (-> zloc z/node :value)
-         result (get-doc nspace sym)]
-     result)))
+         sym (-> zloc z/node :value)]
+     (get-doc nspace sym))))
 
 
 (comment
