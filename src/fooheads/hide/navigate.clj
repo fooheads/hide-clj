@@ -2,6 +2,7 @@
   (:require
     [clojure.java.io :as io]
     [clojure.repl :as repl]
+    [fooheads.hide.user :as user]
     [fooheads.hide.zip :as hz]
     [rewrite-clj.zip :as z]))
 
@@ -107,8 +108,11 @@
 
   ([zloc]
    (let [nspace (-> zloc hz/find-namespace hz/extract-namespace-sym)
-         sym (-> zloc z/node :value)]
-     (get-doc nspace sym))))
+         sym (-> zloc z/node :value)
+         k (-> zloc z/node :k)]
+     (or
+       (user/get-doc (or k sym))
+       (get-doc nspace sym)))))
 
 
 (comment
